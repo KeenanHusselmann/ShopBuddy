@@ -2,14 +2,11 @@ import jsPDF from 'jspdf';
 import Papa from 'papaparse';
 import { supabase } from "@/integrations/supabase/client";
 
-export interface ReportData {
-  orders?: any[];
-  customers?: any[];
-  products?: any[];
-  analytics?: any;
-}
+import { ReportData as BaseReportData } from "@/types/common";
 
-export const generateCSVReport = (data: any[], filename: string): void => {
+export type ReportData = BaseReportData;
+
+export const generateCSVReport = (data: Record<string, unknown>[], filename: string): void => {
   const csv = Papa.unparse(data);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const link = document.createElement('a');
@@ -21,7 +18,7 @@ export const generateCSVReport = (data: any[], filename: string): void => {
   document.body.removeChild(link);
 };
 
-export const generatePDFReport = (reportTitle: string, data: any[], filename: string): void => {
+export const generatePDFReport = (reportTitle: string, data: Record<string, unknown>[], filename: string): void => {
   const doc = new jsPDF();
   
   // Add title
@@ -62,7 +59,7 @@ export const generatePDFReport = (reportTitle: string, data: any[], filename: st
   doc.save(`${filename}_${new Date().toISOString().split('T')[0]}.pdf`);
 };
 
-export const saveReportRecord = async (reportName: string, reportType: 'csv' | 'pdf', filters: any = {}) => {
+export const saveReportRecord = async (reportName: string, reportType: 'csv' | 'pdf', filters: Record<string, unknown> = {}) => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;

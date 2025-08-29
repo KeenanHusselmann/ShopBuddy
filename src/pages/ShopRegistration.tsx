@@ -48,7 +48,7 @@ const ShopRegistration = () => {
       city: "",
       state: "",
       postal_code: "",
-      country: "Namibia"
+              country: "Your Country"
     },
     contact_phone: "",
     contact_email: "",
@@ -100,7 +100,7 @@ const ShopRegistration = () => {
 
       // If user already has a shop, redirect to dashboard
       if (profileData?.shop_id) {
-        navigate("/dashboard");
+        navigate("/shop-owner-dashboard");
         return;
       }
 
@@ -195,7 +195,7 @@ const ShopRegistration = () => {
       });
 
       // Redirect to main dashboard (will show pending status)
-      navigate("/dashboard");
+              navigate("/shop-owner-dashboard");
     } catch (error: any) {
       toast({
         variant: "destructive",

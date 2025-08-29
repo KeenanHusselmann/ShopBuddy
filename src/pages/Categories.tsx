@@ -271,7 +271,7 @@ const Categories = () => {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                Categories Management 🇳🇦
+                Categories Management
               </h1>
               <p className="text-muted-foreground">
                 Organize your products with categories

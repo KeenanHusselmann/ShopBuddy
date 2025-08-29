@@ -25,7 +25,7 @@ const Unauthorized = () => {
           
           <div className="flex flex-col gap-2">
             <Button 
-              onClick={() => navigate("/dashboard")} 
+              onClick={() => navigate("/shop-owner-dashboard")} 
               variant="default"
               className="w-full"
             >

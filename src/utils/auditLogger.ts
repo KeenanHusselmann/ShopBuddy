@@ -1,12 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 
+import { AuditEvent } from "@/types/common";
+
 interface AuditLogData {
   action: string;
   table_name?: string;
   record_id?: string;
-  old_values?: any;
-  new_values?: any;
-  metadata?: any;
+  old_values?: Record<string, unknown>;
+  new_values?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export const logAuditEvent = async (data: AuditLogData) => {

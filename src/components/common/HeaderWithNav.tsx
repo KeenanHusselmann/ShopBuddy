@@ -27,10 +27,11 @@ import {
   Shield
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ExtendedProfile } from "@/types/common";
 
 interface HeaderWithNavProps {
   title: string;
-  user?: any;
+  user?: ExtendedProfile;
   onSignOut?: () => void;
 }
 
@@ -101,7 +102,7 @@ const HeaderWithNav = ({ title, user, onSignOut }: HeaderWithNavProps) => {
                 if (user?.role === "super_admin") {
                   navigate("/admin"); // Admin users go to admin dashboard
                 } else if (user?.role === "shop_admin" || user?.role === "staff") {
-                  navigate("/dashboard"); // Shop users go to shop dashboard
+                  navigate("/shop-owner-dashboard"); // Shop users go to shop dashboard
                 } else if (user?.role === "customer") {
                   navigate("/customer-portal"); // Customers go to customer portal
                 } else {
@@ -113,7 +114,7 @@ const HeaderWithNav = ({ title, user, onSignOut }: HeaderWithNavProps) => {
               <div className="flex items-center space-x-2">
                 <Store className="h-8 w-8 text-primary" />
                 <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  {title} 🇳🇦
+                  {title}
                 </span>
               </div>
             </Button>
@@ -129,7 +130,7 @@ const HeaderWithNav = ({ title, user, onSignOut }: HeaderWithNavProps) => {
                   <>
                     <Button
                       variant="ghost"
-                      onClick={() => navigate("/dashboard")}
+                      onClick={() => navigate("/shop-owner-dashboard")}
                       className="flex items-center space-x-2"
                     >
                       <BarChart3 className="h-4 w-4" />
@@ -226,7 +227,7 @@ const HeaderWithNav = ({ title, user, onSignOut }: HeaderWithNavProps) => {
                   
                   {(user.role === "shop_admin" || user.role === "staff") && (
                     <>
-                      <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                      <DropdownMenuItem onClick={() => navigate("/shop-owner-dashboard")}>
                         <BarChart3 className="mr-2 h-4 w-4" />
                         <span>Dashboard</span>
                       </DropdownMenuItem>

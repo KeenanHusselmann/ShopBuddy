@@ -523,7 +523,7 @@ export default function Orders() {
                 <div>
                   <h3 className="font-semibold mb-2">Order Information</h3>
                   <div className="space-y-1 text-sm">
-                    <p><strong>Status:</strong> <Badge className={getStatusColor(selectedOrder.status)}>{selectedOrder.status}</Badge></p>
+                    <div><strong>Status:</strong> <Badge className={getStatusColor(selectedOrder.status)}>{selectedOrder.status}</Badge></div>
                     <p><strong>Date:</strong> {new Date(selectedOrder.created_at).toLocaleString()}</p>
                     <p><strong>Total:</strong> {selectedOrder.currency} {selectedOrder.total_amount?.toFixed(2)}</p>
                   </div>

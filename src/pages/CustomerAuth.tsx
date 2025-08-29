@@ -1,51 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { 
   ShoppingBag, 
   Eye, 
   EyeOff,
-  LogIn,
-  UserPlus,
-  ArrowLeft,
-  Heart,
-  AlertCircle
+  UserCheck,
+  Building2,
+  AlertCircle,
+  ArrowLeft
 } from "lucide-react";
 
 const CustomerAuth = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  // Check URL parameters to determine initial mode
-  useEffect(() => {
-    const mode = searchParams.get('mode');
-    if (mode === 'signup') {
-      setIsSignUp(true);
-    } else if (mode === 'signin') {
-      setIsSignUp(false);
-    }
-  }, [searchParams]);
 
   // Form state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirm_password: "",
-    first_name: "",
-    last_name: "",
-    phone: "",
-    shop_id: ""
+    shopName: ""
   });
+  const [autoPopulatedShop, setAutoPopulatedShop] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -59,33 +42,223 @@ const CustomerAuth = () => {
     setLoading(true);
 
     try {
-      // Customers use the customer_accounts table for authentication
-      // This is a simplified version - in production you'd want a proper customer auth system
-      const { data, error } = await supabase.auth.signInWithPassword({
+      if (!formData.shopName.trim()) {
+        throw new Error("Please enter the shop name you shop at");
+      }
+
+      console.log("Attempting sign in for:", formData.email, "at shop:", formData.shopName);
+      
+      // First, let's check if the user exists and get their profile
+      console.log("Checking if user exists...");
+      const { data: existingUser, error: userCheckError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password
       });
 
-      if (error) throw error;
+      if (userCheckError) {
+        console.error("Auth error:", userCheckError);
+        
+        // Check if it's a password issue
+        if (userCheckError.message.includes("Invalid login credentials")) {
+          throw new Error("Invalid email or password. Please check your credentials or use the password reset option below.");
+        }
+        
+        throw userCheckError;
+      }
 
-      // Verify user is actually a customer
-      const { data: profile } = await supabase
+      console.log("Auth successful, user ID:", existingUser.user.id);
+
+      // Get user profile to check role and shop
+      console.log("Fetching user profile...");
+      const { data: userProfile, error: profileError } = await supabase
         .from("profiles")
-        .select("role")
-        .eq("id", data.user.id)
+        .select("role, shop_id, first_name, last_name")
+        .eq("id", existingUser.user.id)
         .single();
 
-      if (profile?.role !== 'customer') {
+      if (profileError) {
+        console.error("Profile fetch error:", profileError);
+        await supabase.auth.signOut();
+        throw new Error("Failed to load profile. Please contact your shop owner.");
+      }
+
+      if (!userProfile) {
+        console.log("No profile found for user");
+        await supabase.auth.signOut();
+        throw new Error("Profile not found. Please complete your account setup first.");
+      }
+
+      console.log("User profile loaded:", userProfile);
+
+      if (userProfile?.role !== 'customer') {
         await supabase.auth.signOut();
         throw new Error("Access denied. This portal is for shop customers only.");
       }
 
+      // Auto-populate shop name if not provided - DO THIS FIRST
+      if (!formData.shopName.trim() && userProfile.shop_id) {
+        console.log("Auto-populating shop name from profile...");
+        const { data: userShopData, error: userShopError } = await supabase
+          .from("shops")
+          .select("name")
+          .eq("id", userProfile.shop_id)
+          .single();
+        
+        console.log("Auto-population result:", { userShopData, userShopError });
+        
+        if (!userShopError && userShopData) {
+          formData.shopName = userShopData.name;
+          setAutoPopulatedShop(userShopData.name);
+          console.log("Auto-populated shop name:", userShopData.name);
+          console.log("Updated formData.shopName:", formData.shopName);
+        } else {
+          console.error("Failed to auto-populate shop name:", userShopError);
+        }
+      }
+
+      // Skip shop search if we auto-populated the shop name
+      if (formData.shopName.trim() && autoPopulatedShop) {
+        console.log("Shop name auto-populated, skipping search and proceeding with profile shop_id");
+        // Use the profile shop_id directly instead of searching by name
+        const userShop = {
+          id: userProfile.shop_id,
+          name: formData.shopName
+        };
+        
+        console.log("Using auto-populated shop:", userShop);
+        
+        // Continue to success flow
+        toast({
+          title: `Welcome back, ${userProfile.first_name}!`,
+          description: `You have been successfully signed in to ${userShop.name}.`
+        });
+
+        // Navigate to customer dashboard
+        navigate(`/shop/${userProfile.shop_id}/customer-dashboard`);
+        return; // Exit early, don't continue with shop search
+      }
+
+      // Now find the shop by name - try multiple search strategies
+      console.log("Searching for shop:", formData.shopName);
+      console.log("Shop name length:", formData.shopName.length);
+      console.log("Shop name characters:", Array.from(formData.shopName).map(c => c.charCodeAt(0)));
+      
+      // Test direct query first
+      console.log("Testing direct query...");
+      const testQuery = await supabase
+        .from("shops")
+        .select("id, name")
+        .eq("name", formData.shopName);
+      
+      console.log("Direct test query result:", testQuery);
+      
+      // Test RLS policies by checking if we can see any shops
+      console.log("Testing RLS policies...");
+      const allShopsTest = await supabase
+        .from("shops")
+        .select("id, name")
+        .limit(5);
+      
+      console.log("All shops test result:", allShopsTest);
+      
+      // Test if we can query the specific shop by ID (should work)
+      console.log("Testing shop query by ID...");
+      const shopByIdTest = await supabase
+        .from("shops")
+        .select("id, name")
+        .eq("id", userProfile.shop_id);
+      
+      console.log("Shop by ID test result:", shopByIdTest);
+      
+      // First try exact match
+      let { data: shops, error: shopError } = await supabase
+        .from("shops")
+        .select("id, name")
+        .eq("name", formData.shopName);
+
+      console.log("Exact match result:", { shops, shopError, shopCount: shops?.length || 0 });
+
+      // If no exact match, try partial match
+      if (!shops || shops.length === 0) {
+        console.log("No exact match, trying partial match...");
+        const { data: partialShops, error: partialError } = await supabase
+          .from("shops")
+          .select("id, name")
+          .ilike("name", `%${formData.shopName}%`);
+        
+        console.log("Partial match result:", { partialShops, partialError, partialCount: partialShops?.length || 0 });
+        
+        if (partialError) {
+          console.error("Partial shop search error:", partialError);
+          await supabase.auth.signOut();
+          throw new Error("Failed to find shop. Please check the shop name.");
+        }
+        
+        shops = partialShops;
+        shopError = partialError;
+      }
+
+      // Debug: Log the final shops variable
+      console.log("Final shops variable:", shops);
+      console.log("Final shops type:", typeof shops);
+      console.log("Final shops length:", shops?.length);
+      console.log("Final shops is array:", Array.isArray(shops));
+
+      // If multiple shops found, prioritize the user's specific shop
+      if (shops && shops.length > 1) {
+        console.log("Multiple shops found, prioritizing user's specific shop...");
+        const userSpecificShop = shops.find(shop => shop.id === userProfile.shop_id);
+        if (userSpecificShop) {
+          console.log("Prioritizing user's shop:", userSpecificShop.name);
+          shops = [userSpecificShop]; // Only keep the user's specific shop
+        }
+      }
+
+      console.log("After prioritization - shops:", shops);
+      console.log("After prioritization - shops length:", shops?.length);
+
+      if (shopError) {
+        console.error("Shop search error:", shopError);
+        await supabase.auth.signOut();
+        throw new Error("Failed to find shop. Please check the shop name.");
+      }
+
+      if (!shops || shops.length === 0) {
+        console.log("No shops found with name:", formData.shopName);
+        console.log("Final shops check - shops:", shops);
+        console.log("Final shops check - length:", shops?.length);
+        console.log("Final shops check - is null:", shops === null);
+        console.log("Final shops check - is undefined:", shops === undefined);
+        await supabase.auth.signOut();
+        throw new Error("Shop not found. Please check the shop name or contact your shop owner.");
+      }
+
+      console.log("Found shops:", shops);
+
+      // Check if user belongs to this shop - handle duplicate shop names
+      let userShop = shops.find(shop => shop.id === userProfile.shop_id);
+      
+      // If no direct match and multiple shops with same name, prioritize user's shop
+      if (!userShop && shops.length > 1) {
+        console.log("Multiple shops with same name detected, prioritizing user's specific shop...");
+        userShop = shops.find(shop => shop.id === userProfile.shop_id);
+      }
+      
+      if (!userShop) {
+        console.log("User shop_id:", userProfile.shop_id, "Available shops:", shops.map(s => ({ id: s.id, name: s.name })));
+        await supabase.auth.signOut();
+        throw new Error("You don't have access to this shop. Please contact your shop owner.");
+      }
+
+      console.log("Shop access verified:", userShop.name);
+
       toast({
-        title: "Welcome back, Customer!",
-        description: "You have been successfully signed in to your customer portal."
+        title: `Welcome back, ${userProfile.first_name}!`,
+        description: `You have been successfully signed in to ${userShop.name}.`
       });
 
-      navigate("/customer-portal");
+      // Navigate to customer dashboard
+      navigate(`/shop/${userProfile.shop_id}/customer-dashboard`);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -97,82 +270,33 @@ const CustomerAuth = () => {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordReset = async () => {
+    if (!formData.email.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Email required",
+        description: "Please enter your email address first"
+      });
+      return;
+    }
+
     setLoading(true);
-
-    // Validation
-    if (formData.password !== formData.confirm_password) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Passwords do not match"
-      });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Password must be at least 6 characters long"
-      });
-      setLoading(false);
-      return;
-    }
-
-    if (!formData.shop_id) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please select a shop to join"
-      });
-      setLoading(false);
-      return;
-    }
-
     try {
-      // Create customer account using the database function
-      const { data, error } = await supabase.rpc('create_customer_account', {
-        shop_id_param: formData.shop_id,
-        email_param: formData.email,
-        password_param: formData.password,
-        first_name_param: formData.first_name,
-        last_name_param: formData.last_name,
-        phone_param: formData.phone || null,
-        address_param: null
+      const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
+        redirectTo: `${window.location.origin}/password-reset`
       });
 
       if (error) throw error;
 
-      if (data.success) {
-        toast({
-          title: "Customer Account Created!",
-          description: "Please check your email to verify your account before signing in."
-        });
-
-        // Reset form
-        setFormData({
-          email: "",
-          password: "",
-          confirm_password: "",
-          first_name: "",
-          last_name: "",
-          phone: "",
-          shop_id: ""
-        });
-
-        // Switch to sign in
-        setIsSignUp(false);
-      } else {
-        throw new Error(data.error || "Failed to create account");
-      }
+      toast({
+        title: "Password reset email sent",
+        description: "Please check your email for password reset instructions"
+      });
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Sign up failed",
-        description: error.message
+        title: "Password reset failed",
+        description: error.message || "Failed to send password reset email"
       });
     } finally {
       setLoading(false);
@@ -187,10 +311,10 @@ const CustomerAuth = () => {
           <div className="flex items-center justify-center mb-4">
             <ShoppingBag className="h-16 w-16 text-pink-400" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">ShopBuddy</h1>
-          <h2 className="text-2xl font-semibold text-pink-400 mb-2">Customer Portal</h2>
+          <h1 className="text-4xl font-bold text-white mb-2">Customer Portal</h1>
+          <h2 className="text-2xl font-semibold text-pink-400 mb-2">Shop Access</h2>
           <p className="text-pink-100">
-            {isSignUp ? "Join your favorite shop as a customer" : "Access your customer dashboard"}
+            Access your customer dashboard to view orders and manage your account
           </p>
         </div>
 
@@ -198,73 +322,36 @@ const CustomerAuth = () => {
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
           <CardHeader className="text-center pb-4">
             <CardTitle className="flex items-center justify-center space-x-2 text-gray-800">
-              <Heart className="h-6 w-6 text-pink-600" />
-              <span>{isSignUp ? "Create Customer Account" : "Customer Sign In"}</span>
+              <UserCheck className="h-6 w-6 text-pink-600" />
+              <span>Customer Sign In</span>
             </CardTitle>
             <CardDescription className="text-gray-600">
-              {isSignUp 
-                ? "Join a shop to start shopping and tracking your orders" 
-                : "Sign in to view your orders and manage your account"
-              }
+              Sign in with your customer credentials and specify your shop
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={isSignUp ? handleSignUp : handleSignIn} className="space-y-4">
-              {isSignUp && (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="first_name" className="text-gray-700">First Name *</Label>
-                      <Input
-                        id="first_name"
-                        value={formData.first_name}
-                        onChange={(e) => handleInputChange("first_name", e.target.value)}
-                        placeholder="Enter first name"
-                        required
-                        className="border-gray-300 focus:border-pink-500"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="last_name" className="text-gray-700">Last Name *</Label>
-                      <Input
-                        id="last_name"
-                        value={formData.last_name}
-                        onChange={(e) => handleInputChange("last_name", e.target.value)}
-                        placeholder="Enter last name"
-                        required
-                        className="border-gray-300 focus:border-pink-500"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-gray-700">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
-                      placeholder="+264 XX XXX XXXX"
-                      className="border-gray-300 focus:border-pink-500"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="shop_id" className="text-gray-700">Select Shop *</Label>
-                    <Input
-                      id="shop_id"
-                      value={formData.shop_id}
-                      onChange={(e) => handleInputChange("shop_id", e.target.value)}
-                      placeholder="Enter shop ID or name"
-                      required
-                      className="border-gray-300 focus:border-pink-500"
-                    />
-                    <p className="text-xs text-gray-500">
-                      Ask your shop owner for the shop ID or name
-                    </p>
-                  </div>
-                </>
-              )}
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="shopName" className="text-gray-700">Shop Name *</Label>
+                <div className="relative">
+                  <Input
+                    id="shopName"
+                    type="text"
+                    value={formData.shopName}
+                    onChange={(e) => handleInputChange("shopName", e.target.value)}
+                    placeholder="Enter your shop name"
+                    required
+                    readOnly={!!autoPopulatedShop}
+                    className={`border-gray-300 focus:border-pink-500 pl-10 ${autoPopulatedShop ? 'bg-gray-100 cursor-not-allowed' : ''}`}
+                  />
+                  <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                </div>
+                {autoPopulatedShop ? (
+                  <p className="text-xs text-green-600">✓ Shop name auto-detected from your account</p>
+                ) : (
+                  <p className="text-xs text-gray-500">Enter the exact name of the shop you shop at</p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700">Email *</Label>
@@ -273,7 +360,7 @@ const CustomerAuth = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  placeholder="customer@example.com"
+                  placeholder="customer@yourshop.com"
                   required
                   className="border-gray-300 focus:border-pink-500"
                 />
@@ -305,42 +392,7 @@ const CustomerAuth = () => {
                     )}
                   </Button>
                 </div>
-                {isSignUp && (
-                  <p className="text-xs text-gray-500">
-                    Password must be at least 6 characters long
-                  </p>
-                )}
               </div>
-
-              {isSignUp && (
-                <div className="space-y-2">
-                  <Label htmlFor="confirm_password" className="text-gray-700">Confirm Password *</Label>
-                  <div className="relative">
-                    <Input
-                      id="confirm_password"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={formData.confirm_password}
-                      onChange={(e) => handleInputChange("confirm_password", e.target.value)}
-                      placeholder="Confirm your password"
-                      required
-                      className="border-gray-300 focus:border-pink-500 pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4 text-gray-500" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-gray-500" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
 
               <Button 
                 type="submit" 
@@ -348,55 +400,45 @@ const CustomerAuth = () => {
                 className="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white"
                 size="lg"
               >
-                {loading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                ) : (
-                  isSignUp ? <UserPlus className="h-4 w-4 mr-2" /> : <LogIn className="h-4 w-4 mr-2" />
-                )}
-                {loading 
-                  ? (isSignUp ? "Creating Account..." : "Signing In...") 
-                  : (isSignUp ? "Create Customer Account" : "Sign In")
-                }
+                {loading ? "Signing In..." : "Sign In"}
               </Button>
-            </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
-                {isSignUp ? "Already have a customer account?" : "Need to create a customer account?"}
-              </p>
-              <Button
-                variant="link"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="p-0 h-auto text-pink-600 hover:text-pink-700"
-              >
-                {isSignUp ? "Sign in instead" : "Sign up instead"}
-              </Button>
-            </div>
-
-            {isSignUp && (
-              <div className="mt-6 p-4 bg-pink-50 border border-pink-200 rounded-lg">
-                <div className="flex items-start space-x-2">
-                  <AlertCircle className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm text-pink-800">
-                    <p className="font-medium mb-1">Customer Benefits:</p>
-                    <ul className="list-disc list-inside space-y-1 text-xs">
-                      <li>View shop products and stock levels</li>
-                      <li>Place orders and track delivery</li>
-                      <li>View your spending history</li>
-                      <li>Manage your debt and payments</li>
-                      <li>Access loyalty rewards</li>
-                    </ul>
-                  </div>
-                </div>
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={handlePasswordReset}
+                  disabled={loading}
+                  className="text-pink-600 hover:text-pink-700"
+                >
+                  Forgot your password?
+                </Button>
               </div>
-            )}
 
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <p className="text-xs text-gray-500 text-center">
-                <strong>🛍️ Customer Access:</strong> This portal is for shop customers who want to shop and track orders.
-                <br />
-                Shop owners and staff have separate portals.
-              </p>
+              <div className="text-center pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600">
+                  Don't have an account?{" "}
+                  <span className="text-pink-600 font-medium">
+                    Contact your shop owner to get invited
+                  </span>
+                </p>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Info Card */}
+        <Card className="mt-6 bg-pink-50 border-pink-200">
+          <CardContent className="pt-6">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="h-5 w-5 text-pink-600 mt-0.5" />
+              <div className="text-sm text-pink-800">
+                <p className="font-medium">Customer Account Required</p>
+                <p className="mt-1">
+                  You need to be invited by your shop owner to create a customer account. 
+                  Please contact them to get started.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

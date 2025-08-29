@@ -1,0 +1,112 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - generic [ref=e6]:
+      - img [ref=e7]
+      - generic [ref=e12]:
+        - generic [ref=e13]: ShopBuddy
+        - paragraph [ref=e14]: Complete Shop Management Platform
+    - generic [ref=e16]:
+      - heading "Welcome to ShopBuddy" [level=1] [ref=e17]:
+        - text: Welcome to
+        - generic [ref=e18]: ShopBuddy
+      - paragraph [ref=e19]: The ultimate platform for modern businesses to manage their shops, staff, customers, and operations with ease.
+      - generic [ref=e20]:
+        - generic [ref=e23]: Streamlined Operations
+        - generic [ref=e26]: Multi-User Access
+        - generic [ref=e29]: Real-time Analytics
+    - generic [ref=e30]:
+      - generic [ref=e31]:
+        - heading "Choose Your Portal" [level=2] [ref=e32]
+        - paragraph [ref=e33]: Select the appropriate portal based on your role in the ShopBuddy ecosystem
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - img [ref=e38]
+            - heading "Shop Owners" [level=3] [ref=e42]
+            - paragraph [ref=e43]: Manage your shop operations, staff, and business analytics
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - paragraph [ref=e46]: • Complete inventory management
+              - paragraph [ref=e47]: • Staff and customer management
+              - paragraph [ref=e48]: • Sales analytics and reporting
+              - paragraph [ref=e49]: • Multi-location support
+            - button "Sign In" [ref=e50] [cursor=pointer]:
+              - img
+              - text: Sign In
+            - button "Sign Up" [ref=e51] [cursor=pointer]:
+              - img
+              - text: Sign Up
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - img [ref=e55]
+            - heading "Shop Staff" [level=3] [ref=e60]
+            - paragraph [ref=e61]: Access your shop dashboard to help manage daily operations
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - paragraph [ref=e64]: • Process customer orders
+              - paragraph [ref=e65]: • Manage inventory levels
+              - paragraph [ref=e66]: • Customer service tools
+              - paragraph [ref=e67]: • Sales tracking
+            - button "Sign In" [ref=e68] [cursor=pointer]:
+              - img
+              - text: Sign In
+            - paragraph [ref=e69]: Staff accounts are created by shop owners
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - img [ref=e73]
+            - heading "Shop Customers" [level=3] [ref=e76]
+            - paragraph [ref=e77]: Shop online, track orders, and manage your account
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - paragraph [ref=e80]: • Browse products online
+              - paragraph [ref=e81]: • Place and track orders
+              - paragraph [ref=e82]: • Manage your profile
+              - paragraph [ref=e83]: • View order history
+            - button "Sign In" [ref=e84] [cursor=pointer]:
+              - img
+              - text: Sign In
+            - paragraph [ref=e85]: Customer accounts are created by shop owners
+    - generic [ref=e86]:
+      - generic [ref=e87]:
+        - heading "Why Choose ShopBuddy?" [level=2] [ref=e88]
+        - paragraph [ref=e89]: Built for modern retail businesses, our platform helps you manage every aspect of your business efficiently.
+      - generic [ref=e90]:
+        - generic [ref=e91]:
+          - img [ref=e93]
+          - heading "Complete Management" [level=3] [ref=e98]
+          - paragraph [ref=e99]: Manage inventory, staff, customers, and sales from one platform
+        - generic [ref=e100]:
+          - img [ref=e102]
+          - heading "Multi-User Access" [level=3] [ref=e107]
+          - paragraph [ref=e108]: Invite staff members and customers with role-based permissions
+        - generic [ref=e109]:
+          - img [ref=e111]
+          - heading "Customer Portal" [level=3] [ref=e114]
+          - paragraph [ref=e115]: Provide your customers with a seamless shopping experience
+        - generic [ref=e116]:
+          - img [ref=e118]
+          - heading "Scalable Solution" [level=3] [ref=e122]
+          - paragraph [ref=e123]: Grow your business with our flexible and scalable platform
+    - generic [ref=e125]:
+      - heading "How the System Works" [level=3] [ref=e126]
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - img [ref=e130]
+          - heading "Shop Owners" [level=4] [ref=e135]
+          - paragraph [ref=e136]: Sign up, register your shop, wait for approval, then manage your business with our comprehensive tools.
+        - generic [ref=e137]:
+          - img [ref=e139]
+          - heading "Staff Members" [level=4] [ref=e144]
+          - paragraph [ref=e145]: Get invited by your shop owner to join and help manage daily operations with specialized tools.
+        - generic [ref=e146]:
+          - img [ref=e148]
+          - heading "Customers" [level=4] [ref=e151]
+          - paragraph [ref=e152]: Join your favorite shop to shop online, track orders, and manage your account seamlessly.
+    - paragraph [ref=e155]: © 2024 ShopBuddy. All rights reserved. | Complete Shop Management Platform
+```

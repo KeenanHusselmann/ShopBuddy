@@ -65,14 +65,15 @@ const ShopOwnerAuth = () => {
       if (error) throw error;
 
       // Try to get the user's profile
-      let { data: profile, error: profileError } = await supabase
+      let profile;
+      const { data: profileData, error: profileError } = await supabase
         .from("profiles")
         .select("role, shop_id, shop_registration_status")
         .eq("id", data.user.id)
         .single();
 
       // If profile doesn't exist, create one
-      if (profileError || !profile) {
+      if (profileError || !profileData) {
         console.log("Profile not found, creating new profile...");
         
         // Get user metadata from auth
@@ -96,35 +97,30 @@ const ShopOwnerAuth = () => {
         }
 
         profile = newProfile;
+      } else {
+        profile = profileData;
       }
 
-      // Verify user is a shop owner
+      // Check if user is a shop owner
       if (profile?.role !== 'shop_admin') {
         await supabase.auth.signOut();
         throw new Error("Access denied. This portal is for shop owners only.");
       }
 
-      // Check if shop registration is completed
-      if (!profile.shop_id || profile.shop_registration_status !== 'completed') {
-        // User needs to register their shop first
-        toast({
-          title: "Profile Created Successfully!",
-          description: "Please register your shop details to continue."
-        });
-        
-        // Navigate to shop registration or dashboard
-        navigate("/dashboard");
-        return;
-      }
-
       toast({
-        title: "Welcome back, Shop Owner!",
-        description: "You have been successfully signed in to your shop dashboard."
+        title: `Welcome back, ${profile.first_name}!`,
+        description: "You have been successfully signed in to your shop portal."
       });
 
-      navigate("/dashboard");
+      // Navigate based on shop registration status
+      if (profile.shop_registration_status === 'approved') {
+        navigate("/shop-owner-dashboard");
+      } else if (profile.shop_registration_status === 'pending') {
+        navigate("/shop-registration");
+      } else {
+        navigate("/shop-registration");
+      }
     } catch (error: any) {
-      console.error("Sign in error:", error);
       toast({
         variant: "destructive",
         title: "Sign in failed",
@@ -161,8 +157,7 @@ const ShopOwnerAuth = () => {
     }
 
     try {
-      // Create user account
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -174,16 +169,28 @@ const ShopOwnerAuth = () => {
         }
       });
 
-      if (authError) throw authError;
+      if (error) throw error;
 
-      if (authData.user) {
-        // Simple approach: just show success message
-        // Profile will be created when user first signs in or when they register their shop
-        console.log("User created successfully:", authData.user.id);
+      if (data.user) {
+        // Create profile
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: data.user.id,
+            first_name: formData.first_name,
+            last_name: formData.last_name,
+            role: 'shop_admin',
+            shop_registration_status: null
+          });
+
+        if (profileError) {
+          console.error("Profile creation error:", profileError);
+          // Don't throw error here as user was created successfully
+        }
 
         toast({
-          title: "Shop Owner Account Created!",
-          description: "Please check your email to verify your account, then register your shop."
+          title: "Account Created Successfully!",
+          description: "Please check your email to verify your account before signing in."
         });
 
         // Reset form
@@ -198,11 +205,12 @@ const ShopOwnerAuth = () => {
         // Switch to sign in
         setIsSignUp(false);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       toast({
         variant: "destructive",
         title: "Sign up failed",
-        description: error.message
+        description: errorMessage
       });
     } finally {
       setLoading(false);
@@ -215,12 +223,12 @@ const ShopOwnerAuth = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <Store className="h-16 w-16 text-blue-400" />
+            <Building2 className="h-16 w-16 text-blue-400" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">ShopBuddy</h1>
-          <h2 className="text-2xl font-semibold text-blue-400 mb-2">Shop Owner Portal</h2>
+          <h1 className="text-4xl font-bold text-white mb-2">Shop Portal</h1>
+          <h2 className="text-2xl font-semibold text-blue-400 mb-2">Business Management</h2>
           <p className="text-blue-100">
-            {isSignUp ? "Create new shop owner account" : "Access your shop dashboard"}
+            Manage your shop operations and business
           </p>
         </div>
 
@@ -385,7 +393,7 @@ const ShopOwnerAuth = () => {
                     <ol className="list-decimal list-inside space-y-1 text-xs">
                       <li>Verify your email address</li>
                       <li>Register your shop details</li>
-                      <li>Wait for ShopBuddy admin approval</li>
+                      <li>Wait for platform admin approval</li>
                       <li>Start managing your shop!</li>
                     </ol>
                   </div>

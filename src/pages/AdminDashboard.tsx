@@ -206,7 +206,7 @@ const AdminDashboard = () => {
           title: "Access Denied",
           description: "You need super admin privileges to access this page."
         });
-        navigate("/dashboard");
+        navigate("/shop-owner-dashboard");
         return;
       }
 

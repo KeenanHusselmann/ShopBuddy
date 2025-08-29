@@ -36,7 +36,7 @@ const AdminLogin = () => {
             title: "Access Denied",
             description: "You need super admin privileges to access the admin panel."
           });
-          navigate("/dashboard");
+          navigate("/shop-owner-dashboard");
         }
       }
     };

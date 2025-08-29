@@ -629,6 +629,7 @@ export type Database = {
           address: string | null
           avatar_url: string | null
           created_at: string
+          email: string | null
           first_name: string | null
           id: string
           is_active: boolean | null
@@ -643,6 +644,7 @@ export type Database = {
           address?: string | null
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
           id: string
           is_active?: boolean | null
@@ -657,6 +659,7 @@ export type Database = {
           address?: string | null
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           first_name?: string | null
           id?: string
           is_active?: boolean | null
@@ -858,6 +861,123 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      staff_invitations: {
+        Row: {
+          id: string
+          shop_id: string
+          invited_by: string
+          email: string
+          first_name: string
+          last_name: string
+          role: string
+          permissions: Json | null
+          invitation_token: string
+          status: string
+          expires_at: string
+          created_at: string
+          updated_at: string
+          accepted_at: string | null
+          accepted_by: string | null
+        }
+        Insert: {
+          id?: string
+          shop_id: string
+          invited_by: string
+          email: string
+          first_name: string
+          last_name: string
+          role?: string
+          permissions?: Json | null
+          invitation_token: string
+          status?: string
+          expires_at?: string
+          created_at?: string
+          updated_at?: string
+          accepted_at?: string | null
+          accepted_by?: string | null
+        }
+        Update: {
+          id?: string
+          shop_id?: string
+          invited_by?: string
+          email?: string
+          first_name?: string
+          last_name?: string
+          role?: string
+          permissions?: Json | null
+          invitation_token?: string
+          status?: string
+          expires_at?: string
+          created_at?: string
+          updated_at?: string
+          accepted_at?: string | null
+          accepted_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_invitations_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_invitations_accepted_by_fkey"
+            columns: ["accepted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staff_credentials: {
+        Row: {
+          id: string
+          staff_id: string
+          email: string
+          password_hash: string
+          is_active: boolean | null
+          last_login: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          staff_id: string
+          email: string
+          password_hash: string
+          is_active?: boolean | null
+          last_login?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          staff_id?: string
+          email?: string
+          password_hash?: string
+          is_active?: boolean | null
+          last_login?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_credentials_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppliers: {
         Row: {

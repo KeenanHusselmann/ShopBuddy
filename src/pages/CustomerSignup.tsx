@@ -50,7 +50,7 @@ const CustomerSignup = () => {
       city: "",
       state: "",
       postal_code: "",
-      country: "Namibia"
+              country: "Your Country"
     },
     date_of_birth: ""
   });
@@ -196,7 +196,7 @@ const CustomerSignup = () => {
             <div className="flex items-center justify-center mb-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-4">Welcome to {shop.name}! 🇳🇦</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-4">Welcome to {shop.name}!</h1>
             <p className="text-muted-foreground mb-6">
               Your customer account has been created successfully. You can now:
             </p>
@@ -246,7 +246,7 @@ const CustomerSignup = () => {
             <Store className="h-16 w-16 text-primary" />
           </div>
           
-          <h1 className="text-4xl font-bold mb-4">Join {shop.name} 🇳🇦</h1>
+                      <h1 className="text-4xl font-bold mb-4">Join {shop.name}</h1>
           <p className="text-xl text-muted-foreground mb-6">
             Create your customer account to access products, place orders, and track your spending
           </p>

@@ -191,7 +191,7 @@ export default function CustomerPortal() {
         .from("products")
         .select(`
           *,
-          categories (name)
+          categories!category_id (name)
         `)
         .eq("is_active", true)
         .order("name");
@@ -497,10 +497,7 @@ export default function CustomerPortal() {
         <div className="max-w-4xl mx-auto space-y-6">
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold">ShopBuddy</h1>
-            {/* Namibian Flag Emoji */}
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <span className="text-3xl">🇳🇦</span>
-            </div>
+
             <p className="text-xl text-muted-foreground">Customer Portal</p>
             <p className="text-muted-foreground">
               Sign up to track your orders, manage your account, and stay updated on our latest products and offers.

@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 const SUPABASE_URL = "https://ryymxdnkjzbsabvvgqmv.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5eW14ZG5ranpic2FidnZncW12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MzAyNDYsImV4cCI6MjA3MTAwNjI0Nn0.YVlx3tYl90FBjZJ6K44T-OrfsHzcbIIHABYEXoryL8Y";
+const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5eW14ZG5ranpic2FidnZncW12Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTQzMDI0NiwiZXhwIjoyMDcxMDA2MjQ2fQ.ReQ6ht-u8OKOvgTxnu9ZrR4nNyBtpSVdW3aEv8m5vGg"; // Replace with your actual service role key
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: {
     storage: localStorage,
     persistSession: true,

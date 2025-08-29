@@ -66,7 +66,7 @@ const Reports = () => {
         {};
 
       switch (reportType) {
-        case 'orders':
+        case 'orders': {
           const { data: ordersData } = await supabase
             .from("orders")
             .select(`
@@ -86,8 +86,9 @@ const Reports = () => {
           reportTitle = "Orders Report";
           filename = "orders_report";
           break;
+        }
 
-        case 'customers':
+        case 'customers': {
           const { data: customersData } = await supabase
             .from("customers")
             .select("*")
@@ -99,8 +100,9 @@ const Reports = () => {
           reportTitle = "Customers Report";
           filename = "customers_report";
           break;
+        }
 
-        case 'products':
+        case 'products': {
           const { data: productsData } = await supabase
             .from("products")
             .select("*")
@@ -110,8 +112,9 @@ const Reports = () => {
           reportTitle = "Products Report";
           filename = "products_report";
           break;
+        }
 
-        case 'audit':
+        case 'audit': {
           if (profile.role !== 'shop_admin') {
             toast({
               variant: "destructive",
@@ -133,6 +136,7 @@ const Reports = () => {
           reportTitle = "Audit Trail Report";
           filename = "audit_report";
           break;
+        }
 
         default:
           throw new Error("Invalid report type");
