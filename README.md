@@ -1,34 +1,34 @@
-# 🛍️ Shop Buddy - Modern Point of Sale & Management System
+#  Shop Buddy - Modern Point of Sale & Management System
 
 A comprehensive, multi-tenant Point of Sale (POS) and shop management system built with modern web technologies. Shop Buddy provides complete business management tools for retail operations with real-time activity tracking, staff management, and customer portals.
 
-## ✨ Key Features
+##  Key Features
 
-### 🔐 **Multi-Role Authentication System**
+###  **Multi-Role Authentication System**
 - **Super Admin Portal**: System-wide management and shop approval
 - **Shop Owner Dashboard**: Complete business oversight with staff monitoring
 - **Staff Dashboard**: Daily operations with activity tracking
 - **Customer Portal**: Order history, preferences, and account management
 
-### 💰 **Point of Sale System**
+###  **Point of Sale System**
 - Complete POS interface for retail transactions
 - Real-time inventory updates
 - Multiple payment method support
 - Receipt generation and transaction history
 
-### 📊 **Business Management**
+###  **Business Management**
 - **Real-time Activity Tracking**: Monitor all staff actions and system events
 - **Inventory Management**: Product catalog, stock levels, and automated alerts
 - **Customer Management**: Customer invitations, profiles, and order history
 - **Staff Management**: Role-based access control and session monitoring
 - **Analytics & Reporting**: Business insights, sales reports, and performance metrics
 
-### 🏪 **Multi-Tenant Architecture**
+###  **Multi-Tenant Architecture**
 - Shop registration and approval workflow
 - Data isolation between different shops
 - Scalable infrastructure for multiple businesses
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### **Frontend**
 - **React 18** - Modern React with hooks and concurrent features
@@ -106,7 +106,7 @@ bun run dev
 
 6. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## 📜 Available Scripts
+##  Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
@@ -117,7 +117,7 @@ bun run dev
 - `npm run test:ui` - Run tests with UI
 - `npm run test:headed` - Run tests in headed mode
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ShopBuddy/
@@ -139,7 +139,7 @@ ShopBuddy/
 └── ...
 ```
 
-## 🗄️ Database Setup
+##  Database Setup
 
 The project uses Supabase with comprehensive database migrations including:
 
@@ -165,7 +165,7 @@ The project uses Supabase with comprehensive database migrations including:
 
 For detailed setup instructions, see [docs/SUPABASE_MIGRATION_INSTRUCTIONS.md](./docs/SUPABASE_MIGRATION_INSTRUCTIONS.md)
 
-## 🎯 Key Features Implemented
+##  Key Features Implemented
 
 ### 📈 **Real-time Activity Tracking**
 - **Staff Activity Monitoring** - Track all staff actions in real-time
@@ -173,19 +173,19 @@ For detailed setup instructions, see [docs/SUPABASE_MIGRATION_INSTRUCTIONS.md](.
 - **Audit Trail** - Complete history of all system activities
 - **Performance Analytics** - Staff productivity insights
 
-### 🔐 **Advanced Security**
+###  **Advanced Security**
 - **Multi-tenant Data Isolation** - Complete separation between shops
 - **Role-based Access Control** - Granular permissions system
 - **Real-time Security Monitoring** - Track access patterns and locations
 - **Comprehensive Audit Logging** - Full compliance support
 
-### 💼 **Business Management**
+###  **Business Management**
 - **Shop Registration Workflow** - Complete onboarding process
 - **Staff Invitation System** - Secure staff onboarding
 - **Customer Portal** - Self-service customer management
 - **Inventory Alerts** - Automated low-stock notifications
 
-## 📚 Documentation
+##  Documentation
 
 The [docs/](./docs/) directory contains comprehensive documentation:
 
@@ -205,7 +205,7 @@ The [docs/](./docs/) directory contains comprehensive documentation:
 - [Authentication Portals](./docs/SEPARATE_AUTHENTICATION_PORTALS.md)
 - [Database Schema](./docs/database-tables.md)
 
-## 🧪 Testing
+##  Testing
 
 The project includes comprehensive end-to-end testing with Playwright:
 
@@ -221,7 +221,7 @@ npm run test:products
 npm run test:slow
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -231,12 +231,12 @@ npm run test:slow
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-### 🌟 **Built with modern technologies for scalable retail management**
+###  **Built with modern technologies for scalable retail management**
 
 **Shop Buddy** provides everything you need to run a modern retail business with comprehensive staff monitoring, customer management, and real-time business insights.
