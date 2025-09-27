@@ -1,0 +1,44 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - img [ref=e7]
+      - heading "Shop Portal" [level=1] [ref=e15]
+      - heading "Business Management" [level=2] [ref=e16]
+      - paragraph [ref=e17]: Manage your shop operations and business
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - heading "Shop Owner Sign In" [level=3] [ref=e20]:
+          - img [ref=e21]
+          - generic [ref=e29]: Shop Owner Sign In
+        - paragraph [ref=e30]: Sign in to manage your shop operations
+      - generic [ref=e31]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Email *
+            - textbox "Email *" [active] [ref=e35]: requellehusselmann@gmail.com
+          - generic [ref=e36]:
+            - generic [ref=e37]: Password *
+            - generic [ref=e38]:
+              - textbox "Password *" [ref=e39]
+              - button [ref=e40] [cursor=pointer]:
+                - img
+          - button "Sign In" [ref=e41] [cursor=pointer]:
+            - img
+            - text: Sign In
+        - generic [ref=e42]:
+          - paragraph [ref=e43]: Need to create a shop owner account?
+          - button "Sign up instead" [ref=e44] [cursor=pointer]
+        - paragraph [ref=e46]:
+          - strong [ref=e47]: "🏪 Shop Owner Access:"
+          - text: This portal is for business owners who want to manage their shops.
+          - text: Staff members and customers have separate portals.
+    - button "Back to Home" [ref=e49] [cursor=pointer]:
+      - img
+      - text: Back to Home
+```

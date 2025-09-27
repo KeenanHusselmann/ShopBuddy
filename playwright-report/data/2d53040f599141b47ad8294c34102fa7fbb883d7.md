@@ -1,0 +1,99 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list [ref=e4]:
+      - status [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e7]: Welcome back, Shop Owner!
+          - generic [ref=e8]: You have been successfully signed in to your shop portal.
+        - button [ref=e9] [cursor=pointer]:
+          - img [ref=e10] [cursor=pointer]
+  - region "Notifications alt+T"
+  - generic [ref=e14]:
+    - banner [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - img [ref=e19]
+          - generic [ref=e23]:
+            - heading "CK's Creations" [level=1] [ref=e24]
+            - paragraph [ref=e25]: Owner Portal
+        - button "Logout" [ref=e27] [cursor=pointer]:
+          - img
+          - text: Logout
+    - generic [ref=e28]:
+      - complementary [ref=e29]:
+        - navigation [ref=e30]:
+          - generic [ref=e31]:
+            - heading "Navigation" [level=3] [ref=e33]
+            - link "Manage Staff" [ref=e34]:
+              - /url: /staff-management
+              - img [ref=e35]
+              - text: Manage Staff
+            - link "Staff Attendance" [ref=e40]:
+              - /url: /staff-attendance
+              - img [ref=e41]
+              - text: Staff Attendance
+            - link "Manage Customers" [ref=e43]:
+              - /url: /customer-management
+              - img [ref=e44]
+              - text: Manage Customers
+            - link "POS System" [ref=e47]:
+              - /url: /shop-owner-pos
+              - img [ref=e48]
+              - text: POS System
+            - link "Analytics" [ref=e50]:
+              - /url: /shop-owner-analytics
+              - img [ref=e51]
+              - text: Analytics
+            - link "Products" [ref=e53]:
+              - /url: /shop-owner-products
+              - img [ref=e54]
+              - text: Products
+      - main [ref=e58]:
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - heading "Total Products" [level=3] [ref=e63]
+                - img [ref=e64]
+              - generic [ref=e68]:
+                - generic [ref=e69]: "0"
+                - paragraph [ref=e70]: 0 low stock items
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - heading "Total Orders" [level=3] [ref=e73]
+                - img [ref=e74]
+              - generic [ref=e78]:
+                - generic [ref=e79]: "0"
+                - paragraph [ref=e80]: 0 pending
+            - generic [ref=e81]:
+              - generic [ref=e82]:
+                - heading "Total Customers" [level=3] [ref=e83]
+                - img [ref=e84]
+              - generic [ref=e89]:
+                - generic [ref=e90]: "0"
+                - paragraph [ref=e91]: Active customers
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - heading "Staff Activity" [level=3] [ref=e94]
+                - img [ref=e95]
+              - generic [ref=e100]:
+                - generic [ref=e101]: "0"
+                - paragraph [ref=e102]: 0 total staff
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - heading "Shop Notifications" [level=3] [ref=e105]:
+                - img [ref=e106]
+                - text: Shop Notifications
+              - paragraph [ref=e109]: Important updates and alerts for your shop
+            - generic [ref=e112]:
+              - img [ref=e113]
+              - paragraph [ref=e116]: No new notifications
+          - generic [ref=e118]:
+            - heading "Monthly Sales Performance" [level=3] [ref=e119]:
+              - img [ref=e120]
+              - text: Monthly Sales Performance
+            - paragraph [ref=e122]: Track your sales performance over the last 6 months
+```

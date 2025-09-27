@@ -1,0 +1,135 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - img [ref=e8]
+          - generic [ref=e12]:
+            - heading "Product Management" [level=1] [ref=e13]
+            - paragraph [ref=e14]: Manage products, categories & suppliers
+        - generic [ref=e15]:
+          - button "Back to Dashboard" [ref=e16] [cursor=pointer]:
+            - img
+            - text: Back to Dashboard
+          - button "Logout" [ref=e17] [cursor=pointer]:
+            - img
+            - text: Logout
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - button "Products (4)" [ref=e20] [cursor=pointer]:
+          - img [ref=e21] [cursor=pointer]
+          - text: Products (4)
+        - button "Categories (4)" [ref=e25] [cursor=pointer]:
+          - img [ref=e26] [cursor=pointer]
+          - text: Categories (4)
+        - button "Suppliers (2)" [ref=e28] [cursor=pointer]:
+          - img [ref=e29] [cursor=pointer]
+          - text: Suppliers (2)
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - heading "Products" [level=2] [ref=e36]
+          - button "Add Product" [ref=e38] [cursor=pointer]:
+            - img
+            - text: Add Product
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - img [ref=e43]
+            - textbox "Search products..." [ref=e46]
+          - combobox [ref=e47] [cursor=pointer]:
+            - generic: All Categories
+            - img [ref=e48] [cursor=pointer]
+          - combobox [ref=e50] [cursor=pointer]:
+            - generic: All Suppliers
+            - img [ref=e51] [cursor=pointer]
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - heading "Deck Box" [level=3] [ref=e58]
+                - paragraph [ref=e59]: Box/Holder for playing cards
+              - generic [ref=e60]: Active
+            - generic [ref=e61]:
+              - img "Deck Box" [ref=e63]
+              - generic [ref=e64]:
+                - generic [ref=e65]: "Price:"
+                - generic [ref=e66]: $100
+              - generic [ref=e67]:
+                - generic [ref=e68]: "SKU:"
+                - generic [ref=e69]: DB-001
+              - generic [ref=e70]:
+                - button "Edit" [ref=e71] [cursor=pointer]:
+                  - img
+                  - text: Edit
+                - button "Delete" [ref=e72] [cursor=pointer]:
+                  - img
+                  - text: Delete
+          - generic [ref=e73]:
+            - generic [ref=e75]:
+              - generic [ref=e76]:
+                - heading "Adjustable Phone Stand" [level=3] [ref=e77]
+                - paragraph [ref=e78]: ADJUSTABLE PHONE STAND, VERTICAL VIEW ONLY, FOLDABLE
+              - generic [ref=e79]: Active
+            - generic [ref=e80]:
+              - img "Adjustable Phone Stand" [ref=e82]
+              - generic [ref=e83]:
+                - generic [ref=e84]: "Price:"
+                - generic [ref=e85]: $150
+              - generic [ref=e86]:
+                - generic [ref=e87]: "SKU:"
+                - generic [ref=e88]: APS-001
+              - generic [ref=e89]:
+                - button "Edit" [ref=e90] [cursor=pointer]:
+                  - img
+                  - text: Edit
+                - button "Delete" [ref=e91] [cursor=pointer]:
+                  - img
+                  - text: Delete
+          - generic [ref=e92]:
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - heading "Jewellery Box" [level=3] [ref=e96]
+                - paragraph [ref=e97]: ELEGANT JEWELLERY BOX
+              - generic [ref=e98]: Active
+            - generic [ref=e99]:
+              - img "Jewellery Box" [ref=e101]
+              - generic [ref=e102]:
+                - generic [ref=e103]: "Price:"
+                - generic [ref=e104]: $350
+              - generic [ref=e105]:
+                - generic [ref=e106]: "SKU:"
+                - generic [ref=e107]: JB-001
+              - generic [ref=e108]:
+                - button "Edit" [ref=e109] [cursor=pointer]:
+                  - img
+                  - text: Edit
+                - button "Delete" [ref=e110] [cursor=pointer]:
+                  - img
+                  - text: Delete
+          - generic [ref=e111]:
+            - generic [ref=e113]:
+              - generic [ref=e114]:
+                - heading "Zodiac coasters" [level=3] [ref=e115]
+                - paragraph [ref=e116]: Zodiac coasters
+              - generic [ref=e117]: Active
+            - generic [ref=e118]:
+              - img "Zodiac coasters" [ref=e120]
+              - generic [ref=e121]:
+                - generic [ref=e122]: "Price:"
+                - generic [ref=e123]: $35
+              - generic [ref=e124]:
+                - generic [ref=e125]: "SKU:"
+                - generic [ref=e126]: ZC-001
+              - generic [ref=e127]:
+                - button "Edit" [ref=e128] [cursor=pointer]:
+                  - img
+                  - text: Edit
+                - button "Delete" [ref=e129] [cursor=pointer]:
+                  - img
+                  - text: Delete
+```
