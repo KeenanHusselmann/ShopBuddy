@@ -167,7 +167,7 @@ For detailed setup instructions, see [docs/SUPABASE_MIGRATION_INSTRUCTIONS.md](.
 
 ##  Key Features Implemented
 
-### 📈 **Real-time Activity Tracking**
+###  **Real-time Activity Tracking**
 - **Staff Activity Monitoring** - Track all staff actions in real-time
 - **Session Management** - Monitor active staff sessions
 - **Audit Trail** - Complete history of all system activities
